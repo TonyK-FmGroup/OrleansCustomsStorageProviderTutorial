@@ -17,7 +17,6 @@ public static class CustomStorageSiloExtension
 
     public static IServiceCollection AddCustomStorage(this IServiceCollection services, string providerName)
     {
-        return services.AddSingletonNamedService<IGrainStorage>(providerName, (s, n) =>
-                s.GetRequiredServiceByName<IGrainStorage>(n));
+        return services.AddSingletonNamedService<IGrainStorage>(providerName, (s, n) => new CustomStorage(providerName));
     }
 }

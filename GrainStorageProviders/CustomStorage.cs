@@ -6,6 +6,12 @@ namespace GrainStorageProviders;
 
 public class CustomStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle>
 {
+    private string StorageName;
+    public CustomStorage(string storageName)
+    {
+        StorageName = storageName;
+    }
+
     public Task ClearStateAsync<T>(string stateName, GrainId grainId, IGrainState<T> grainState)
     {
         throw new NotImplementedException();
@@ -13,7 +19,9 @@ public class CustomStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle
 
     public void Participate(ISiloLifecycle observer)
     {
-        throw new NotImplementedException();
+        observer.Subscribe(
+       OptionFormattingUtilities.Name<CustomStorage>(StorageName),
+       ServiceLifecycleStage.ApplicationServices,  Init);
     }
 
     public Task ReadStateAsync<T>(string stateName, GrainId grainId, IGrainState<T> grainState)
@@ -24,5 +32,11 @@ public class CustomStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle
     public Task WriteStateAsync<T>(string stateName, GrainId grainId, IGrainState<T> grainState)
     {
         throw new NotImplementedException();
+    }
+
+    private Task Init(CancellationToken ct)
+    {
+        // set something up here for the service
+        return Task.CompletedTask;
     }
 }
